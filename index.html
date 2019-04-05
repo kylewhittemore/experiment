@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Rock, Paper, Scissors --- SHOOT!</title>
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 15px;
+      background-color: rgba(114, 167, 212, 1);
+      color: rgba(63, 59, 54, 1);
+      font-family: Arial, Helvetica, sans-serif
+    }
+
+    button {
+      border: 1px solid #dddddd;
+      height: 40px;
+      width: 150px;
+      background-color:  #dddddd;;
+      color: rgba(63, 59, 54, 1);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 22px;
+    }
+
+    .game-area {
+
+      
+      height: 100%;
+      width: 100%;
+      min-width: 640px;
+      min-height: 640px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .game-play-stats {
+      text-align: left;
+      width: 440px;
+    }
+
+    .button-image,
+    .button-container {
+      padding: 5px;
+      margin: 10px;
+    }
+
+    .button-panel,
+    .display-panel {
+      display: flex;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="game-area">
+    <div class="container">
+      <h1>Rock, Paper, Scissors --- SHOOT!</h1>
+    </div>
+    <div class="container">
+      <h2>Your Choice: </h2>
+    </div>
+    <div class="button-panel">
+      <div id="rock" class="button-image"><img src="./rock.jpeg" /></div>
+      <div id="paper" class="button-image"><img src="./paper.png"></div>
+      <div id="scissors" class="button-image"><img src="./scissors.jpeg" /></div>
+    </div>
+    <div class="container">
+      <h2 id="result-banner" >Computer Choice: </h2>
+    </div>
+    <div class="display-panel">
+      <div id="comp-rock" class="button-container"><img src="./rock.jpeg" /></div>
+      <div id="comp-paper" class="button-container"><img src="./paper.png"></div>
+      <div id="comp-scissors" class="button-container"><img src="./scissors.jpeg" /></div>
+    </div>
+    <div><button id="play">Play</button></div>
+    <div class="game-play-stats">
+      <!-- <h1 id="comp-choice">Computer Choice: </h1>
+      <h1 id="user-choice">User Choice: </h1> -->
+      <h2 id="user-score"></h2>
+      <h2 id="comp-score"></h2>
+      <h2 id="tie-score"></h2>
+    </div>
+  </div>
+</body>
+
+</div>
+<script type="text/javascript">
+
+  let userWins = 0;
+  let compWins = 0;
+  let ties = 0;
+  let userChoice = '';
+  let gameStateActive = false;
+
+  // assign each DOM element to a variable to work with
+  const playButton = document.getElementById('play');
+  const rockButton = document.getElementById('rock');
+  const paperButton = document.getElementById('paper');
+  const scissorsButton = document.getElementById('scissors');
+
+  const compRockButton = document.getElementById('comp-rock');
+  const compPaperButton = document.getElementById('comp-paper');
+  const compScissorsButton = document.getElementById('comp-scissors');
+
+  const compScoreDisplay = document.getElementById('comp-score');
+  const userScoreDisplay = document.getElementById('user-score');
+  const tieScoreDisplay = document.getElementById('tie-score');
+  const compChoiceDisplay = document.getElementById('comp-choice');
+  const userChoiceDisplay = document.getElementById('user-choice');
+  const resultBanner = document.getElementById('result-banner');
+
+  rockButton.style.opacity = .55;
+  paperButton.style.opacity = .55;
+  scissorsButton.style.opacity = .55;
+  compRockButton.style.opacity = .55;
+  compPaperButton.style.opacity = .55;
+  compScissorsButton.style.opacity = .55;
+
+  //Computer choice generator function. selects a  0 < random number <= 2, and returns the corresponding rock, paper, or scissors value. 
+  const getCompChoice = function () {
+    const randNum = Math.floor(Math.random() * 3);
+    if (randNum === 0) {
+      compRockButton.style.opacity = 1;
+      compPaperButton.style.opacity = .55;
+      compScissorsButton.style.opacity = .55;
+      return 'rock';
+    } else if (randNum === 1) {
+      compRockButton.style.opacity = .55;
+      compPaperButton.style.opacity = 1;
+      compScissorsButton.style.opacity = .55;
+      return 'paper';
+    } else {
+      compRockButton.style.opacity = .55;
+      compPaperButton.style.opacity = .55;
+      compScissorsButton.style.opacity = 1;
+      return 'scissors';
+    };
+  };
+
+  //function to set the buttons to the default state, waiting for the user to initiate
+  function disableButtons() {
+    playButton.disabled = false;
+    rockButton.style.opacity = .55;
+    paperButton.style.opacity = .55;
+    scissorsButton.style.opacity = .55;
+    playButton.style.opacity = 1;
+    gameStateActive = false;
+    playGame();
+  };
+
+  //funciton to set the buttons to the active game state, where they make their selection
+  function enableButtons() {
+    playButton.disabled = true;
+    rockButton.style.opacity = 1;
+    paperButton.style.opacity = 1;
+    scissorsButton.style.opacity = 1;
+    playButton.style.opacity = .55;
+    compRockButton.style.opacity = 1;
+    compPaperButton.style.opacity = 1;
+    compScissorsButton.style.opacity = 1;
+    resultBanner.innerHTML = 'Computer Choice:';
+    gameStateActive = true;
+  };
+
+  //Main game function. 
+  const playGame = function () {
+
+    //generates the computers choice by calling the getCompChoice function, scoped to this function, and recreated each function call (i think, it seems to work that way)
+    const compChoice = getCompChoice();
+
+    //sets/updates the html for each competitor's selection
+    // userChoiceDisplay.innerHTML = 'User Choice: ' + userChoice;
+    // compChoiceDisplay.innerHTML = 'Computer Choice: ' + compChoice;
+
+    //conditional statement to determine winner, increments the winner's win counter.
+    if (compChoice === userChoice) {
+      resultBanner.innerHTML = 'Tie!';
+      ties++;
+    } else if (compChoice === 'paper' && userChoice === 'rock') {
+      resultBanner.innerHTML = 'Computer Wins!';
+      compWins++;
+    } else if (compChoice === 'paper' && userChoice === 'scissors') {
+      resultBanner.innerHTML = 'User Wins!';
+      userWins++;
+    } else if (compChoice === 'rock' && userChoice === 'paper') {
+      resultBanner.innerHTML = 'User Wins!';
+      userWins++;
+    } else if (compChoice === 'rock' && userChoice === 'scissors') {
+      resultBanner.innerHTML = 'Computer Wins!';
+      compWins++;
+    } else if (compChoice === 'scissors' && userChoice === 'rock') {
+      resultBanner.innerHTML = 'User Wins!';
+      userWins++;
+    } else if (compChoice === 'scissors' && userChoice === 'paper') {
+      resultBanner.innerHTML = 'Computer Wins!';
+      compWins++;
+    };
+
+    //html display update
+    compScoreDisplay.innerHTML = 'Computer Score: ' + compWins;
+    userScoreDisplay.innerHTML = 'User Score: ' + userWins;
+    tieScoreDisplay.innerHTML = 'Ties: ' + ties;
+  };
+
+  // Add eventListener that sets the userChoice 
+  // and toggles the buttons from active to inactive
+  rockButton.addEventListener('click', function () {
+    if (gameStateActive) {
+      userChoice = 'rock';
+      console.log(userChoice);
+      disableButtons();
+      rockButton.style.opacity = 1;
+    };
+  });
+
+  paperButton.addEventListener('click', function () {
+    if (gameStateActive) {
+      userChoice = 'paper';
+      console.log(userChoice);
+      disableButtons();
+      paperButton.style.opacity = 1;
+    };
+  });
+
+  scissorsButton.addEventListener('click', function () {
+    if (gameStateActive) {
+      userChoice = 'scissors';
+      console.log(userChoice);
+      disableButtons();
+      scissorsButton.style.opacity = 1;
+    };
+  });
+
+  playButton.addEventListener('click', function () {
+    if (!gameStateActive) {
+      enableButtons();
+    };
+  });
+
+</script>
+</body>
+
+</html>
