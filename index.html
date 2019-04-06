@@ -26,9 +26,10 @@
       font-size: 22px;
     }
 
+.border-style {
+  border: 2px solid rgba(63, 59, 54, 1);
+}
     .game-area {
-
-      
       height: 100%;
       width: 100%;
       min-width: 640px;
@@ -45,7 +46,7 @@
 
     .button-image,
     .button-container {
-      padding: 5px;
+      padding: 6px 5px 2px 5px;
       margin: 10px;
     }
 
@@ -127,18 +128,21 @@
     const randNum = Math.floor(Math.random() * 3);
     if (randNum === 0) {
       compRockButton.style.opacity = 1;
+      compRockButton.classList.add("border-style");
       compPaperButton.style.opacity = .55;
       compScissorsButton.style.opacity = .55;
       return 'rock';
     } else if (randNum === 1) {
       compRockButton.style.opacity = .55;
       compPaperButton.style.opacity = 1;
+      compPaperButton.classList.add("border-style");
       compScissorsButton.style.opacity = .55;
       return 'paper';
     } else {
       compRockButton.style.opacity = .55;
       compPaperButton.style.opacity = .55;
       compScissorsButton.style.opacity = 1;
+      compScissorsButton.classList.add("border-style");
       return 'scissors';
     };
   };
@@ -164,6 +168,14 @@
     compRockButton.style.opacity = 1;
     compPaperButton.style.opacity = 1;
     compScissorsButton.style.opacity = 1;
+
+    compScissorsButton.classList.remove("border-style");
+    compRockButton.classList.remove("border-style");
+    compPaperButton.classList.remove("border-style");
+    scissorsButton.classList.remove("border-style");
+    rockButton.classList.remove("border-style");
+    paperButton.classList.remove("border-style");
+
     resultBanner.innerHTML = 'Computer Choice:';
     gameStateActive = true;
   };
@@ -216,6 +228,7 @@
       console.log(userChoice);
       disableButtons();
       rockButton.style.opacity = 1;
+      rockButton.classList.add("border-style");
     };
   });
 
@@ -225,6 +238,7 @@
       console.log(userChoice);
       disableButtons();
       paperButton.style.opacity = 1;
+      paperButton.classList.add("border-style");
     };
   });
 
@@ -234,6 +248,7 @@
       console.log(userChoice);
       disableButtons();
       scissorsButton.style.opacity = 1;
+      scissorsButton.classList.add("border-style");
     };
   });
 
